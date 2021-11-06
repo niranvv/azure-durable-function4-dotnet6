@@ -16,7 +16,7 @@ namespace Learn.DurableFunction.ActivityFunctions
 
         private readonly string _username;
         private readonly string _password;
-        private HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new HttpClient();
         private const string BaseUrl = "https://api.github.com";
 
         public GitHubAPIService()

@@ -1,4 +1,5 @@
-﻿using Learn.DurableFunction.ActivityFunctions;
+﻿using Azure.Identity;
+using Learn.DurableFunction.ActivityFunctions;
 using Learn.DurableFunction.Models;
 using Learn.DurableFunction.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -23,8 +24,15 @@ namespace Learn.DurableFunction
             var buildConfig = configBuilder.Build();
             var appConfigConenctionString = buildConfig["AppConfigurationConnectionString"];
 
-            configBuilder.AddAzureAppConfiguration(appConfigConenctionString);
-            //configBuilder.AddAzureAppConfiguration(options => options.Connect(appConfigConenctionString);
+            //configBuilder.AddAzureAppConfiguration(appConfigConenctionString);
+            configBuilder.AddAzureAppConfiguration(options =>
+                                                        options
+                                                            .Connect(appConfigConenctionString)
+                                                            .ConfigureKeyVault(kv =>
+                                                            {
+                                                                kv.SetCredential(new DefaultAzureCredential());
+                                                            })
+                                                        );
             buildConfig = configBuilder.Build();
             builder.Services.Replace(new ServiceDescriptor(typeof(IConfiguration), buildConfig));
 

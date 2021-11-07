@@ -1,4 +1,5 @@
 using Learn.DurableFunction.ActivityFunctions;
+using Learn.DurableFunction.Helpers;
 using Learn.DurableFunction.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -25,7 +26,9 @@ namespace Learn.DurableFunction.Orchestrators
             foreach (var repo in repos)
             {
                 log.LogInformation($"Adding Task for Repository {repo}");
-                var task = context.CallActivityAsync<RepoViewCount>(nameof(GetRepositoryViewCount), repo);
+                var task = context.CallActivityWithRetryAsync<RepoViewCount>(nameof(GetRepositoryViewCount),
+                                                                             FunctionRetryOptions.options,
+                                                                             repo);
                 tasks.Add(task);
             }
 

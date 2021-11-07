@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Learn.DurableFunction.ActivityFunctions
+namespace Learn.DurableFunction.Exceptions
 {
     [Serializable]
     internal class TooManyRequestsException : Exception

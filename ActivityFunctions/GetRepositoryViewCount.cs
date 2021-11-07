@@ -1,4 +1,5 @@
-﻿using Learn.DurableFunction.Models;
+﻿using Learn.DurableFunction.Exceptions;
+using Learn.DurableFunction.Models;
 using Learn.DurableFunction.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;

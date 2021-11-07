@@ -1,5 +1,6 @@
 ﻿using Learn.DurableFunction.Models;
 using Learn.DurableFunction.Services;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,13 +17,18 @@ namespace Learn.DurableFunction.ActivityFunctions
 
         private readonly string _username;
         private readonly string _password;
+        private readonly string _baseUrl;
         private readonly HttpClient _httpClient = new HttpClient();
-        private const string BaseUrl = "https://api.github.com";
 
-        public GitHubAPIService()
+        public GitHubAPIService(IOptions<GitHubAPIConfig> gitHubAPIConfig)
         {
-            _username = Environment.GetEnvironmentVariable("GitHubUsername");
-            _password = Environment.GetEnvironmentVariable("GitHubPassword");
+            //_username = Environment.GetEnvironmentVariable("GitHubUsername");
+            //_password = Environment.GetEnvironmentVariable("GitHubPassword");
+
+            var configValue = gitHubAPIConfig.Value;
+            _username = configValue.Username;
+            _password = configValue.Password;
+            _baseUrl = configValue.BaseUrl;
         }
         public async Task<RepoViewCount> GetRepositoryViewCount(string repoName)
         {
@@ -30,7 +36,7 @@ namespace Learn.DurableFunction.ActivityFunctions
 
             var result = new RepoViewCount { RepoName = repoName };
             PrepareHttpClient();
-            var url = $"{BaseUrl}/repos/{_username}/{repoName}/traffic/views";
+            var url = $"{_baseUrl}/repos/{_username}/{repoName}/traffic/views";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var response = await _httpClient.SendAsync(request);
 
@@ -51,7 +57,7 @@ namespace Learn.DurableFunction.ActivityFunctions
 
             var result = new List<string>();
             PrepareHttpClient();
-            var url = $"{BaseUrl}/users/{_username}/repos";
+            var url = $"{_baseUrl}/users/{_username}/repos";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var response = await _httpClient.SendAsync(request);
 
